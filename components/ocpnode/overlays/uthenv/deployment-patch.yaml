@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: ocpnode
+  namespace: utherp0
+spec:
+  replicas: 1
+  selector: {}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+    spec:
+      containers:
+      - image: quay.io/redhat-appstudio/user-workload@sha256:bc21da33b56fa527e8d019325f2f4db1b9205557fe800aadf2003940bb77664c
+        name: container-image
+        resources: {}
+status: {}
