@@ -1,0 +1,51 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: ocpnode
+  namespace: utherp0
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        build.appstudio.openshift.io/application: uthocpnode
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: ocpnode
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: ocpnode-
+      labels:
+        build.appstudio.openshift.io/application: uthocpnode
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/component: ocpnode
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: utherp0
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/utherp0/ocpnode
+      - name: output-image
+        value: quay.io/redhat-appstudio/user-workload:utherp0-ocpnode-$(tt.params.git-revision)
+      - name: dockerfile
+        value: https://raw.githubusercontent.com/nodeshift-starters/devfile-sample/main/Dockerfile
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio/build-templates-bundle:13f5d9c921b3f727684a00084037f673a0dc4273
+        name: docker-build
+      workspaces:
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: appstudio
+        subPath: ocpnode/$(tt.params.git-revision)
+      - name: registry-auth
+        secret:
+          secretName: redhat-appstudio-registry-pull-secret
+    status: {}
+status: {}
